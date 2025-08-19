@@ -39,9 +39,10 @@ def thompson_sampling_suggestions(data, n=2):
         alpha = 1 + stats["success"]
         beta = 1 + stats["fail"]
         sampled_p = random.betavariate(alpha, beta)
-        quest_scores.append((quest["name"], sampled_p))
-    quest_scores.sort(key=lambda x: x[1], reverse=True)
-    return [name for name, _ in quest_scores[:n]]
+        quest_scores.append((sampled_p, quest["name"]))
+
+    quest_scores.sort(reverse=True)
+    return [q for _, q in quest_scores[:n]]
 
 # -------------------- GAME LOGIC --------------------
 def completed_quest(data, quest_name):
