@@ -16,17 +16,30 @@ quests = [
 
 # -------------------- SAVE/LOAD --------------------
 def load_game():
+    # Fresh default structure
+    default_data = {
+        "xp": 0,
+        "level": 0,
+        "completed_today": [],
+        "success": {quest["name"]: {"success": 1, "fail": 1} for quest in quests}
+    }
+
     if os.path.exists(save_file):
         with open(save_file, "r") as f:
-            return json.load(f)
+            data = json.load(f)
+
+        # 🔧 Repair missing quest stats (backward compatibility)
+        if "success" not in data:
+            data["success"] = {}
+
+        for quest in quests:
+            if quest["name"] not in data["success"]:
+                data["success"][quest["name"]] = {"success": 1, "fail": 1}
+
+        return data
+
     else:
-        # Initialize success stats for each quest
-        return {
-            "xp": 0,
-            "level": 0,
-            "completed_today": [],
-            "success": {quest["name"]: {"success": 1, "fail": 1} for quest in quests}
-        }
+        return default_data
 
 def save_game(data):
     with open(save_file, "w") as f:
