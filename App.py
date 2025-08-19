@@ -20,11 +20,12 @@ def load_game():
         with open(save_file, "r") as f:
             return json.load(f)
     else:
+        # Initialize success stats for each quest
         return {
             "xp": 0,
             "level": 0,
             "completed_today": [],
-            "success": {}  # track {quest: {"success": X, "fail": Y}}
+            "success": {quest["name"]: {"success": 1, "fail": 1} for quest in quests}
         }
 
 def save_game(data):
